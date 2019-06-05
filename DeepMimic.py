@@ -266,7 +266,7 @@ def mouse_move(x, y):
 def init_draw():
     glutInit()  
     
-    glutInitContextVersion(3, 2)
+    # glutInitContextVersion(3, 2)
     glutInitContextFlags(GLUT_FORWARD_COMPATIBLE)
     glutInitContextProfile(GLUT_CORE_PROFILE)
 

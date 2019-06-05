@@ -1,4 +1,10 @@
+*.swp
 *.pyc
+*.pkl
+*.py~
+.pytest_cache
+.DS_Store
+.idea
 
 *.opensdf
 *.sdf
@@ -14,6 +20,10 @@
 *.pyd
 *_wrap.cpp
 *.htm
+*.egg-info
+.cache
+*.sublime-project
+*.sublime-workspace
 
 .vs/
 __pycache__/
@@ -28,3 +38,24 @@ Backup/
 data/intermediate/
 
 DeepMimicCore/DeepMimicCore.py
+
+# Setuptools distribution and build folders.
+/dist/
+/build
+keys/
+logs/
+
+.ipynb_checkpoints
+ghostdriver.log
+
+htmlcov
+
+junk
+src
+
+MUJOCO_LOG.TXT
+test_code.py
+
+msg/
+.vscode/
+saved_models/

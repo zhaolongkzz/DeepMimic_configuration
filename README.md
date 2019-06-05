@@ -1,30 +1,42 @@
-## Problem
+# Overview of Deep Mimic Paper
 
-### 1 
-make: clang++: Command not found
-Makefile:49: recipe for target 'objs/Main.o' failed
-make: *** [objs/Main.o] Error 127
+[TOC]
 
-`sudo apt-get install clang llvm`
+## Introducation
+Code accompanying the SIGGRAPH 2018 paper:
+"DeepMimic: Example-Guided Deep Reinforcement Learning of Physics-Based Character Skills".
+The framework uses reinforcement learning to train a simulated humanoid to imitate a variety
+of motion skills from mocap data.
 
-use `clang --version` to see the version
+Project page: https://xbpeng.github.io/projects/DeepMimic/index.html
 
-### 2
+![Skills](images/teaser.png)
 
-in Ubuntu16.04, you can isntall bullet by `sudo apt-get install libbullet-dev libbullet-extras-dev`
+### Dependencies
+C++:
+- Bullet 2.87 (https://github.com/bulletphysics/bullet3/releases)
+- Eigen (http://www.eigen.tuxfamily.org/index.php?title=Main_Page)
+- OpenGL >= 3.2
+- freeglut (http://freeglut.sourceforge.net/)
+- glew (http://glew.sourceforge.net/)
+
+Python:
+- Python 3
+- PyOpenGL (http://pyopengl.sourceforge.net/)
+- Tensorflow (https://www.tensorflow.org/)
+- MPI4Py (https://mpi4py.readthedocs.io/en/stable/install.html)
+
+Misc:
+- SWIG (http://www.swig.org/)
+- MPI 
+	- Windows: https://docs.microsoft.com/en-us/message-passing-interface/microsoft-mpi
+	- Linux: `sudo apt install libopenmpi-dev`
 
 
-fix the location of the eigen and bullet, if you use the env in conda, like below:
+## Installation 
+Here provided how to use and make configuration of Deep Mimic in Ubuntu-16.04
 
-```bash
-EIGEN_DIR = /usr/include/eigen3
-BULLET_INC_DIR = /usr/include/bullet
-
-PYTHON_INC = /home/zzl/anaconda3/envs/mimic/include/python3.6m
-PYTHON_LIB = /home/zzl/anaconda3/envs/mimic/lib/ -lpython3.6m
-```
-
-## Installation of DeepMimic in Ubuntu16.04
+If you'd like to see the original version of installation by authors 'Xuebin Peng', the [link here](https://github.com/xbpeng/DeepMimic).
 
 
 ### 1.Bullet2.88
@@ -64,7 +76,7 @@ sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev
 ```bash
 cmake .
 make 
-sudo install
+sudo make install
 ```
 
 ### 5.Glew
@@ -94,42 +106,76 @@ conda install tensorflow-gpu
 
 [Swig](http://www.swig.org/)
 
+If you are using anaconda and activate a environment, I suggest commenting out all the line of conda in `.bashrc`, and open a new terminal to install swig, because of the `libpcre.so.1` not find if it's in conda floder.
+
+```bash
+sudo apt-get install g++
+sudo apt-get install libpcre3 libpcre3-dev
+# download on previous link
+
+tar -xzcf swig-xxxxx.tar.gz
+cd swig-3.0.12
+./configure
+
+make 
+sudo make install
+```
+
+not forget to add these two line in `.bashrc`
+
+```bash
+SWIG_PATH=/usr/local/share/swig/3.0.12
+PATH=$PATH:$SWIG_PATH
+```
+
 MPI: `sudo apt install libopenmpi-dev`
 
 
+## Problem
+
+### 1.clang++ not found
+make: clang++: Command not found
+Makefile:49: recipe for target 'objs/Main.o' failed
+make: *** [objs/Main.o] Error 127
+
+`sudo apt-get install clang llvm`
+
+use `clang --version` to see the version
+
+### 2.Bullet
+
+in Ubuntu-16.04, you can install bullet-2.88 by `sudo apt-get install libbullet-dev libbullet-extras-dev`
+
+
+fix the location of the eigen and bullet, if you use the env in conda, like below:
+
+```bash
+EIGEN_DIR = /usr/include/eigen3
+BULLET_INC_DIR = /usr/include/bullet
+
+PYTHON_INC = /home/zzl/anaconda3/envs/mimic/include/python3.6m
+PYTHON_LIB = /home/zzl/anaconda3/envs/mimic/lib/ -lpython3.6m
+```
+
+### 3.Segmentation fault
+```bash
+Renderer: GeForce GTX 1060/PCIe/SSE2
+OpenGL version supported 3.2.0 NVIDIA 384.130
+Compiling shader: data/shaders/Mesh_VS.glsl
+Compiling shader: data/shaders/VertColor_PS.glsl
+Compiling shader: data/shaders/FullScreenQuad_VS.glsl
+Compiling shader: data/shaders/DownSample_PS.glsl
+Compiling shader: data/shaders/Mesh_VS.glsl
+Compiling shader: data/shaders/DownSample_PS.glsl
+Segmentation fault
+```
+when you encounter the problem of `Segmentation fault`, there are two aspects, first remember to use NVIDIA <= 390, and second is to comment out #269 line (#glutInitContextVersion(3, 2))
 
 
 
-# Intro 
 
-Code accompanying the SIGGRAPH 2018 paper:
-"DeepMimic: Example-Guided Deep Reinforcement Learning of Physics-Based Character Skills".
-The framework uses reinforcement learning to train a simulated humanoid to imitate a variety
-of motion skills from mocap data.
 
-Project page: https://xbpeng.github.io/projects/DeepMimic/index.html
 
-![Skills](images/teaser.png)
-
-## Dependencies
-C++:
-- Bullet 2.87 (https://github.com/bulletphysics/bullet3/releases)
-- Eigen (http://www.eigen.tuxfamily.org/index.php?title=Main_Page)
-- OpenGL >= 3.2
-- freeglut (http://freeglut.sourceforge.net/)
-- glew (http://glew.sourceforge.net/)
-
-Python:
-- Python 3
-- PyOpenGL (http://pyopengl.sourceforge.net/)
-- Tensorflow (https://www.tensorflow.org/)
-- MPI4Py (https://mpi4py.readthedocs.io/en/stable/install.html)
-
-Misc:
-- SWIG (http://www.swig.org/)
-- MPI 
-	- Windows: https://docs.microsoft.com/en-us/message-passing-interface/microsoft-mpi
-	- Linux: `sudo apt install libopenmpi-dev`
 
 ## Build
 The simulated environments are written in C++, and the python wrapper is built using SWIG.
