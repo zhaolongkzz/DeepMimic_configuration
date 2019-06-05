@@ -24,11 +24,77 @@ PYTHON_INC = /home/zzl/anaconda3/envs/mimic/include/python3.6m
 PYTHON_LIB = /home/zzl/anaconda3/envs/mimic/lib/ -lpython3.6m
 ```
 
+## Installation of DeepMimic in Ubuntu16.04
+
+
+### 1.Bullet2.88
+
+[Bullet 2.88](https://github.com/bulletphysics/bullet3/releases)
+
+```bash
+./build_cmake_pybullet_double.sh
+cd build_cmake
+sudo make install
+```
+
+
+### 2.Eigen3
+
+[Eigen](http://www.eigen.tuxfamily.org/index.php?title=Main_Page)
+
+```bash
+mkdir build_dir && cd build_dir
+cmake ..
+make install
+```
 
 
 
+### 3.OpenGL
+
+```bash
+sudo apt-get update
+sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev
+```
+
+### 4.Freeglut
+
+[Freeglut](http://freeglut.sourceforge.net/)
+
+```bash
+cmake .
+make 
+sudo install
+```
+
+### 5.Glew
+
+[Glew](http://glew.sourceforge.net/)
+
+```bash
+sudo apt-get install build-essential libxmu-dev libxi-dev libgl-dev
+make
+sudo make install
+make clean
+```
+
+### 6.env
+
+[PyOpenGL](http://pyopengl.sourceforge.net/)
 
 
+```bash
+pip install PyOpenGL PyOpenGL_accelerate
+pip install mpi4py
+conda install numpy=1.15
+conda install tensorflow-gpu
+```
+
+### 7.Swig
+
+[Swig](http://www.swig.org/)
+
+MPI: `sudo apt install libopenmpi-dev`
 
 
 
