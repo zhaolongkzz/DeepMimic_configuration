@@ -10,6 +10,10 @@ of motion skills from mocap data.
 
 Project page: https://xbpeng.github.io/projects/DeepMimic/index.html
 
+
+Maybe this one also helps you, [link](https://github.com/bsivanantham/DeepMimic/blob/master/README.Install.md).
+
+
 ![Skills](images/teaser.png)
 
 ### Dependencies
@@ -49,18 +53,16 @@ cd build_cmake
 sudo make install
 ```
 
-
 ### 2.Eigen3
 
 [Eigen](http://www.eigen.tuxfamily.org/index.php?title=Main_Page)
 
+if your computer has one, can not be installed.
 ```bash
 mkdir build_dir && cd build_dir
 cmake ..
 make install
 ```
-
-
 
 ### 3.OpenGL
 
@@ -99,7 +101,8 @@ make clean
 pip install PyOpenGL PyOpenGL_accelerate
 pip install mpi4py
 conda install numpy=1.15
-conda install tensorflow-gpu
+conda install tensorflow-gpu=1.12
+conda install PyOpenGL
 ```
 
 ### 7.Swig
