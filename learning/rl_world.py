@@ -4,8 +4,11 @@ import learning.tf_util as TFUtil
 from learning.rl_agent import RLAgent
 from util.logger import Logger
 
+
 class RLWorld(object):
     def __init__(self, env, arg_parser):
+        # shield gpu using
+        # os.environ["CUDA_VISIBLE_DEVICES"] = '-1'
         TFUtil.disable_gpu()
 
         self.env = env
@@ -15,12 +18,12 @@ class RLWorld(object):
         self.parse_args(arg_parser)
 
         self.build_agents()
-        
+
         return
 
     def get_enable_training(self):
         return self._enable_training
-    
+
     def set_enable_training(self, enable):
         self._enable_training = enable
         for i in range(len(self.agents)):
@@ -37,7 +40,7 @@ class RLWorld(object):
         return
 
     enable_training = property(get_enable_training, set_enable_training)
-    
+
     def parse_args(self, arg_parser):
         self.train_agents = self.arg_parser.parse_bools('train_agents')
         num_agents = self.env.get_num_agents()
@@ -56,6 +59,7 @@ class RLWorld(object):
         Logger.print('')
         Logger.print('Num Agents: {:d}'.format(num_agents))
 
+        # recognize 'agent_files'
         agent_files = self.arg_parser.parse_strings('agent_files')
         assert(len(agent_files) == num_agents or len(agent_files) == 0)
 
@@ -72,6 +76,7 @@ class RLWorld(object):
             if curr_agent is not None:
                 curr_agent.output_dir = output_path
                 curr_agent.int_output_dir = int_output_path
+                # print current agent state (StateDim 197, GoalDim 0, ActionDim 36)
                 Logger.print(str(curr_agent))
 
                 if (len(model_files) > 0):
@@ -97,7 +102,7 @@ class RLWorld(object):
         return
 
     def end_episode(self):
-        self._end_episode_agents();
+        self._end_episode_agents()
         return
 
     def _update_env(self, timestep):
@@ -133,6 +138,5 @@ class RLWorld(object):
         else:
             agent = AgentBuilder.build_agent(self, id, agent_file)
             assert (agent != None), 'Failed to build agent {:d} from: {}'.format(id, agent_file)
-        
+
         return agent
-        

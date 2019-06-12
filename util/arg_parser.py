@@ -1,5 +1,6 @@
 import re as RE
 
+
 class ArgParser(object):
     global_parser = None
 
@@ -12,6 +13,9 @@ class ArgParser(object):
         return
 
     def load_args(self, arg_strs):
+        """
+        load arguments as dict
+        """
         succ = True
         vals = []
         curr_key = ''
@@ -25,11 +29,14 @@ class ArgParser(object):
                             self._table[curr_key] = vals
 
                     vals = []
+                    # current key words behind '--'
                     curr_key = str[2::]
                 else:
+                    # value of key words
                     vals.append(str)
 
         if (curr_key != ''):
+            # save arguments as dict
             if (curr_key not in self._table):
                 self._table[curr_key] = vals
 
@@ -55,12 +62,18 @@ class ArgParser(object):
         return key in self._table
 
     def parse_string(self, key, default=''):
+        """
+        get single string, self._table[key][0]
+        """
         str = default
         if self.has_key(key):
             str = self._table[key][0]
         return str
 
     def parse_strings(self, key, default=[]):
+        """
+        get strings, self._table[key]
+        """
         arr = default
         if self.has_key(key):
             arr = self._table[key]
@@ -103,13 +116,19 @@ class ArgParser(object):
         return arr
 
     def _is_comment(self, str):
+        """
+        if # then commenting out
+        """
         is_comment = False
         if (len(str) > 0):
             is_comment = str[0] == '#'
 
         return is_comment
-        
+
     def _is_key(self, str):
+        """
+        if -- then save as key words
+        """
         is_key = False
         if (len(str) >= 3):
             is_key = str[0] == '-' and str[1] == '-'
@@ -118,7 +137,7 @@ class ArgParser(object):
 
     def _parse_bool(self, str):
         val = False
-        if (str == 'true' or str == 'True' or str == '1' 
-            or str == 'T' or str == 't'):
+        if (str == 'true' or str == 'True' or str == '1'
+                or str == 'T' or str == 't'):
             val = True
         return val
