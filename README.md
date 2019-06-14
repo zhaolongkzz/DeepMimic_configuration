@@ -147,7 +147,7 @@ use `clang --version` to see the version
 
 ### 2.Bullet
 
-in Ubuntu-16.04, you can install bullet-2.88 by `sudo apt-get install libbullet-dev libbullet-extras-dev`
+in Ubuntu-16.04, you can install `bullet` by `sudo apt-get install libbullet-dev libbullet-extras-dev`
 
 
 fix the location of the eigen and bullet, if you use the env in conda, like below:

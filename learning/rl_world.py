@@ -11,12 +11,14 @@ class RLWorld(object):
         # os.environ["CUDA_VISIBLE_DEVICES"] = '-1'
         TFUtil.disable_gpu()
 
+        # read all the arguments in the world
         self.env = env
         self.arg_parser = arg_parser
         self._enable_training = True
         self.train_agents = []
         self.parse_args(arg_parser)
 
+        # set agent, model and so on, and read the arguments in args.txt
         self.build_agents()
 
         return
@@ -53,7 +55,8 @@ class RLWorld(object):
         return
 
     def build_agents(self):
-        num_agents = self.env.get_num_agents()
+        # deepmimic_env.get_num_agents(): self._core.GetNumAgents()
+        num_agents = self.env.get_num_agents()      # if num_agents is 2 or more, we can use multi-agents
         self.agents = []
 
         Logger.print('')
@@ -63,17 +66,22 @@ class RLWorld(object):
         agent_files = self.arg_parser.parse_strings('agent_files')
         assert(len(agent_files) == num_agents or len(agent_files) == 0)
 
+        # model_files, but it comment out
         model_files = self.arg_parser.parse_strings('model_files')
         assert(len(model_files) == num_agents or len(model_files) == 0)
 
+        # output and intermediate output
         output_path = self.arg_parser.parse_string('output_path')
         int_output_path = self.arg_parser.parse_string('int_output_path')
 
         for i in range(num_agents):
+            # data/agents/ct_agent_humanoid_ppo.txt to set two agents
             curr_file = agent_files[i]
+            # read file and build agent, if you have more agents, it will build more class
             curr_agent = self._build_agent(i, curr_file)
 
             if curr_agent is not None:
+                # rl_agent.output_dir
                 curr_agent.output_dir = output_path
                 curr_agent.int_output_dir = int_output_path
                 # print current agent state (StateDim 197, GoalDim 0, ActionDim 36)
@@ -112,6 +120,7 @@ class RLWorld(object):
     def _update_agents(self, timestep):
         for agent in self.agents:
             if (agent is not None):
+                # rl_agent update
                 agent.update(timestep)
         return
 
@@ -132,10 +141,12 @@ class RLWorld(object):
         return
 
     def _build_agent(self, id, agent_file):
+        # represent the agent id and file_name
         Logger.print('Agent {:d}: {}'.format(id, agent_file))
         if (agent_file == 'none'):
             agent = None
         else:
+            # build PPO Agent class => agent
             agent = AgentBuilder.build_agent(self, id, agent_file)
             assert (agent != None), 'Failed to build agent {:d} from: {}'.format(id, agent_file)
 

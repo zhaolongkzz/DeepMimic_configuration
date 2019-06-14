@@ -14,6 +14,7 @@ from util.logger import Logger
 import util.mpi_util as MPIUtil
 import util.math_util as MathUtil
 
+
 class RLAgent(ABC):
     class Mode(Enum):
         TRAIN = 0
@@ -21,7 +22,7 @@ class RLAgent(ABC):
         TRAIN_END = 2
 
     NAME = "None"
-    
+
     UPDATE_PERIOD_KEY = "UpdatePeriod"
     ITERS_PER_UPDATE = "ItersPerUpdate"
     DISCOUNT_KEY = "Discount"
@@ -37,31 +38,30 @@ class RLAgent(ABC):
     EXP_ANNEAL_SAMPLES_KEY = "ExpAnnealSamples"
     EXP_PARAM_BEG_KEY = "ExpParamsBeg"
     EXP_PARAM_END_KEY = "ExpParamsEnd"
-    
-    
+
     def __init__(self, world, id, json_data):
         self.world = world
         self.id = id
         self.logger = Logger()
         self._mode = self.Mode.TRAIN
-        
+
         assert self._check_action_space(), \
             Logger.print("Invalid action space, got {:s}".format(str(self.get_action_space())))
-        
+
         self._enable_training = True
         self.path = Path()
         self.iter = int(0)
         self.start_time = time.time()
         self._update_counter = 0
 
-        self.update_period = 1.0 # simulated time (seconds) before each training update
+        self.update_period = 1.0  # simulated time (seconds) before each training update
         self.iters_per_update = int(1)
         self.discount = 0.95
         self.mini_batch_size = int(32)
         self.replay_buffer_size = int(50000)
         self.init_samples = int(1000)
         self.normalizer_samples = np.inf
-        self._local_mini_batch_size = self.mini_batch_size # batch size for each work for multiprocessing
+        self._local_mini_batch_size = self.mini_batch_size  # batch size for each work for multiprocessing
         self._need_normalizer_update = True
         self._total_sample_count = 0
 
@@ -69,22 +69,31 @@ class RLAgent(ABC):
         self._int_output_dir = ""
         self.output_iters = 100
         self.int_output_iters = 100
-        
+
         self.train_return = 0.0
         self.test_episodes = int(0)
         self.test_episode_count = int(0)
         self.test_return = 0.0
         self.avg_test_return = 0.0
-        
+
         self.exp_anneal_samples = 320000
         self.exp_params_beg = ExpParams()
         self.exp_params_end = ExpParams()
         self.exp_params_curr = ExpParams()
 
+        # jump and use ppo_agent._load_params()
+        # super() => pg_agent._load_params()
+        # super() => rl_agent._load_params()
         self._load_params(json_data)
+        # jump and use pg_agent._build_replay_buffer()
+        # super() => rl_agent._build_replay_buffer()
         self._build_replay_buffer(self.replay_buffer_size)
+        # jump and use pg_agent._build_normalizers()
+        # super() => tf_agent._build_normalizers()
         self._build_normalizers()
+        # jump and use rl_agent._build_bounds()
         self._build_bounds()
+        # jump and use pg_agent.reset()
         self.reset()
 
         return
@@ -98,7 +107,7 @@ class RLAgent(ABC):
 
     def get_output_dir(self):
         return self._output_dir
-    
+
     def set_output_dir(self, out_dir):
         self._output_dir = out_dir
         if (self._output_dir != ""):
@@ -109,7 +118,7 @@ class RLAgent(ABC):
 
     def get_int_output_dir(self):
         return self._int_output_dir
-    
+
     def set_int_output_dir(self, out_dir):
         self._int_output_dir = out_dir
         return
@@ -169,7 +178,7 @@ class RLAgent(ABC):
 
     def enable_testing(self):
         return self.test_episodes > 0
-    
+
     def get_name(self):
         return self.NAME
 
@@ -196,7 +205,7 @@ class RLAgent(ABC):
     @abstractmethod
     def _train_step(self):
         pass
-    
+
     @abstractmethod
     def _check_action_space(self):
         pass
@@ -215,21 +224,21 @@ class RLAgent(ABC):
 
     def get_num_actions(self):
         return self.world.env.get_num_actions(self.id)
-    
+
     def need_new_action(self):
         return self.world.env.need_new_action(self.id)
 
     def _build_normalizers(self):
         self.s_norm = Normalizer(self.get_state_size(), self.world.env.build_state_norm_groups(self.id))
-        self.s_norm.set_mean_std(-self.world.env.build_state_offset(self.id), 
+        self.s_norm.set_mean_std(-self.world.env.build_state_offset(self.id),
                                  1 / self.world.env.build_state_scale(self.id))
 
         self.g_norm = Normalizer(self.get_goal_size(), self.world.env.build_goal_norm_groups(self.id))
-        self.g_norm.set_mean_std(-self.world.env.build_goal_offset(self.id), 
+        self.g_norm.set_mean_std(-self.world.env.build_goal_offset(self.id),
                                  1 / self.world.env.build_goal_scale(self.id))
 
         self.a_norm = Normalizer(self.world.env.get_action_size())
-        self.a_norm.set_mean_std(-self.world.env.build_action_offset(self.id), 
+        self.a_norm.set_mean_std(-self.world.env.build_action_offset(self.id),
                                  1 / self.world.env.build_action_scale(self.id))
         return
 
@@ -241,19 +250,19 @@ class RLAgent(ABC):
     def _load_params(self, json_data):
         if (self.UPDATE_PERIOD_KEY in json_data):
             self.update_period = int(json_data[self.UPDATE_PERIOD_KEY])
-        
+
         if (self.ITERS_PER_UPDATE in json_data):
             self.iters_per_update = int(json_data[self.ITERS_PER_UPDATE])
-                    
+
         if (self.DISCOUNT_KEY in json_data):
             self.discount = json_data[self.DISCOUNT_KEY]
-        
+
         if (self.MINI_BATCH_SIZE_KEY in json_data):
             self.mini_batch_size = int(json_data[self.MINI_BATCH_SIZE_KEY])
-            
+
         if (self.REPLAY_BUFFER_SIZE_KEY in json_data):
             self.replay_buffer_size = int(json_data[self.REPLAY_BUFFER_SIZE_KEY])
-            
+
         if (self.INIT_SAMPLES_KEY in json_data):
             self.init_samples = int(json_data[self.INIT_SAMPLES_KEY])
 
@@ -265,7 +274,7 @@ class RLAgent(ABC):
 
         if (self.INT_OUTPUT_ITERS_KEY in json_data):
             self.int_output_iters = json_data[self.INT_OUTPUT_ITERS_KEY]
-            
+
         if (self.TEST_EPISODES_KEY in json_data):
             self.test_episodes = int(json_data[self.TEST_EPISODES_KEY])
 
@@ -277,13 +286,13 @@ class RLAgent(ABC):
 
         if (self.EXP_PARAM_END_KEY in json_data):
             self.exp_params_end.load(json_data[self.EXP_PARAM_END_KEY])
-        
+
         num_procs = MPIUtil.get_num_procs()
         self._local_mini_batch_size = int(np.ceil(self.mini_batch_size / num_procs))
         self._local_mini_batch_size = np.maximum(self._local_mini_batch_size, 1)
         self.mini_batch_size = self._local_mini_batch_size * num_procs
-        
-        assert(self.exp_params_beg.noise == self.exp_params_end.noise) # noise std should not change
+
+        assert(self.exp_params_beg.noise == self.exp_params_end.noise)  # noise std should not change
         self.exp_params_curr = copy.deepcopy(self.exp_params_beg)
         self.exp_params_end.noise = self.exp_params_beg.noise
 
@@ -332,7 +341,7 @@ class RLAgent(ABC):
         if not (self._is_first_step()):
             r = self._record_reward()
             self.path.rewards.append(r)
-        
+
         a, logp = self._decide_action(s=s, g=g)
         assert len(np.shape(a)) == 1
         assert len(np.shape(logp)) <= 1
@@ -345,12 +354,12 @@ class RLAgent(ABC):
         self.path.actions.append(a)
         self.path.logps.append(logp)
         self.path.flags.append(flags)
-        
+
         if self._enable_draw():
             self._log_val(s, g)
-        
+
         return
-    
+
     def _update_exp_params(self):
         lerp = float(self._total_sample_count) / self.exp_anneal_samples
         lerp = np.clip(lerp, 0.0, 1.0)
@@ -413,14 +422,14 @@ class RLAgent(ABC):
 
     def _enable_int_output(self):
         return MPIUtil.is_root_proc() and self.int_output_dir != ""
-    
+
     def _calc_val_bounds(self, discount):
         r_min = self.world.env.get_reward_min(self.id)
         r_max = self.world.env.get_reward_max(self.id)
         assert(r_min <= r_max)
 
-        val_min = r_min / ( 1.0 - discount)
-        val_max = r_max / ( 1.0 - discount)
+        val_min = r_min / (1.0 - discount)
+        val_max = r_max / (1.0 - discount)
         return val_min, val_max
 
     def _calc_val_offset_scale(self, discount):
@@ -453,7 +462,7 @@ class RLAgent(ABC):
             val_succ = r_succ / (1.0 - discount)
 
         return val_fail, val_succ
-    
+
     def _update_iter(self, iter):
         if (self._enable_output() and self.iter % self.output_iters == 0):
             output_path = self._get_output_path()
@@ -484,7 +493,7 @@ class RLAgent(ABC):
         self.replay_buffer = ReplayBuffer(buffer_size=buffer_size)
         self.replay_buffer_initialized = False
         return
-    
+
     def _store_path(self, path):
         path_id = self.replay_buffer.store(path)
         valid_path = path_id != MathUtil.INVALID_IDX
@@ -518,17 +527,17 @@ class RLAgent(ABC):
         samples = self.replay_buffer.total_count
         self._total_sample_count = int(MPIUtil.reduce_sum(samples))
         end_training = False
-        
-        if (self.replay_buffer_initialized):  
+
+        if (self.replay_buffer_initialized):
             if (self._valid_train_step()):
                 prev_iter = self.iter
                 iters = self._get_iters_per_update()
                 avg_train_return = MPIUtil.reduce_avg(self.train_return)
-            
+
                 for i in range(iters):
                     curr_iter = self.iter
                     wall_time = time.time() - self.start_time
-                    wall_time /= 60 * 60 # store time in hours
+                    wall_time /= 60 * 60  # store time in hours
 
                     has_goal = self.has_goal()
                     s_mean = np.mean(self.s_norm.mean)
@@ -552,7 +561,7 @@ class RLAgent(ABC):
 
                     Logger.print("Agent " + str(self.id))
                     self.logger.print_tabular()
-                    Logger.print("") 
+                    Logger.print("")
 
                     if (self._enable_output() and curr_iter % self.int_output_iters == 0):
                         self.logger.dump_tabular()
@@ -564,26 +573,26 @@ class RLAgent(ABC):
 
             Logger.print("Agent " + str(self.id))
             Logger.print("Samples: " + str(self._total_sample_count))
-            Logger.print("") 
+            Logger.print("")
 
             if (self._total_sample_count >= self.init_samples):
                 self.replay_buffer_initialized = True
                 end_training = self.enable_testing()
-        
+
         if self._need_normalizer_update:
             self._update_normalizers()
             self._need_normalizer_update = self.normalizer_samples > self._total_sample_count
 
         if end_training:
             self._init_mode_train_end()
- 
+
         return
 
     def _get_iters_per_update(self):
         return MPIUtil.get_num_procs() * self.iters_per_update
 
     def _valid_train_step(self):
-        return True 
+        return True
 
     def _log_exp_params(self):
         self.logger.log_tabular("Exp_Rate", self.exp_params_curr.rate)

@@ -19,6 +19,7 @@ import os.path as osp, shutil, time, atexit, os, subprocess
 
 class Logger:
     def print(str):
+        # rank == ROOT_PROC_RANK (0) is true
         if (MPIUtil.is_root_proc()):
             print(str)
         return

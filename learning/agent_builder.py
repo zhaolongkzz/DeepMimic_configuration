@@ -9,6 +9,7 @@ def build_agent(world, id, file):
     with open(file) as data_file:    
         json_data = json.load(data_file)
         
+        # ensure agent_file has AgentType (PPO)
         assert AGENT_TYPE_KEY in json_data
         agent_type = json_data[AGENT_TYPE_KEY]
         

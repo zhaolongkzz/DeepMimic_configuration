@@ -1,0 +1,4 @@
+--scene kin_char
+#this is real reference motion
+--character_file data/characters/humanoid3d.txt
+--motion_file data/motions/humanoid3d_walk.txt

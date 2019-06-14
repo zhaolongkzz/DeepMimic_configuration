@@ -41,9 +41,10 @@ def build_arg_parser(args):
     # store a _table using dict
     arg_parser.load_args(args)
 
+    # ensure arg_file is exist, and load the file in it
     arg_file = arg_parser.parse_string('arg_file', '')
     if (arg_file != ''):
-        # read the arguments in train_args.txt and store in _table
+        # read the arguments in arg_file.txt and store in _table
         succ = arg_parser.load_file(arg_file)
         assert succ, Logger.print('Failed to load args from: ' + arg_file)
 
@@ -65,7 +66,7 @@ def update_intermediate_buffer():
 
 
 def update_world(world, time_elapsed):
-    num_substeps = world.env.get_num_update_substeps()
+    num_substeps = world.env.get_num_update_substeps()    # 10
     timestep = time_elapsed / num_substeps
     num_substeps = 1 if (time_elapsed == 0) else num_substeps
 
@@ -315,7 +316,9 @@ def setup_draw():
 
 def build_world(args, enable_draw, playback_speed=1):
     arg_parser = build_arg_parser(args)
+    # build env: core, seed
     env = DeepMimicEnv(args, enable_draw)
+    # build world for agent
     world = RLWorld(env, arg_parser)
     world.env.set_playback_speed(playback_speed)
     return world

@@ -13,6 +13,7 @@ class TFAgent(RLAgent):
     def __init__(self, world, id, json_data):
         self.tf_scope = 'agent'
         self.graph = tf.Graph()
+        # show the message of tensorflow
         self.sess = tf.Session(graph=self.graph)
 
         super().__init__(world, id, json_data)
@@ -53,10 +54,12 @@ class TFAgent(RLAgent):
     def _build_graph(self, json_data):
         with self.sess.as_default(), self.graph.as_default():
             with tf.variable_scope(self.tf_scope):
-                self._build_nets(json_data)
+                # Built actor net: fc_2layers_1024units
+                # Built critic net: fc_2layers_1024units
+                self._build_nets(json_data)     # ppo_agent
                 
                 with tf.variable_scope(self.SOLVER_SCOPE):
-                    self._build_losses(json_data)
+                    self._build_losses(json_data)    # ppo_agent
                     self._build_solvers(json_data)
 
                 self._initialize_vars()
