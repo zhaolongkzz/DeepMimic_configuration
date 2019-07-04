@@ -10,9 +10,9 @@ of motion skills from mocap data.
 Project page: https://xbpeng.github.io/projects/DeepMimic/index.html
 
 ## Installation 
-Here provided how to use and make configuration of Deep Mimic in Ubuntu-16.04
+Here I provide how to use and make configuration of Deep Mimic in Ubuntu-16.04, and also offer some problem solving to code, from 0 to 7 and problem below, hope it can help you~     [[link](https://github.com/zhaolongkzz/DeepMimic_configuration/blob/master/README.md#0-dependencies)]
 
-If you'd like to see the original version of installation by authors 'Xuebin Peng', the [link here](https://github.com/zhaolongkzz/DeepMimic_configuration/blob/master/README_INSTALLATION.md). If all I offer isn't useful to you, Maybe this one also helps you, [link](https://github.com/bsivanantham/DeepMimic/blob/master/README.Install.md).
+If you'd like to see the original version of installation by author 'Xuebin Peng', the [link here](https://github.com/zhaolongkzz/DeepMimic_configuration/blob/master/README_INSTALLATION.md). If all I offer isn't useful to you, Maybe this one also helps you, [link](https://github.com/bsivanantham/DeepMimic/blob/master/README.Install.md).
 
 
 ### 0. Dependencies
