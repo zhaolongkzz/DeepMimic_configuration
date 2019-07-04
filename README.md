@@ -1,22 +1,21 @@
 # Overview of Deep Mimic Paper
-
 [TOC]
 
 ## Introducation
-Code accompanying the SIGGRAPH 2018 paper:
+This is the paper of SIGGRAPH 2018 paper:
 "DeepMimic: Example-Guided Deep Reinforcement Learning of Physics-Based Character Skills".
 The framework uses reinforcement learning to train a simulated humanoid to imitate a variety
 of motion skills from mocap data.
 
 Project page: https://xbpeng.github.io/projects/DeepMimic/index.html
 
+## Installation 
+Here provided how to use and make configuration of Deep Mimic in Ubuntu-16.04
 
-Maybe this one also helps you, [link](https://github.com/bsivanantham/DeepMimic/blob/master/README.Install.md).
+If you'd like to see the original version of installation by authors 'Xuebin Peng', the [link here](https://github.com/zhaolongkzz/DeepMimic_configuration/blob/master/README_INSTALLATION.md). If all I offer isn't useful to you, Maybe this one also helps you, [link](https://github.com/bsivanantham/DeepMimic/blob/master/README.Install.md).
 
 
-![Skills](images/teaser.png)
-
-### Dependencies
+### 0. Dependencies
 C++:
 - Bullet 2.87 (https://github.com/bulletphysics/bullet3/releases)
 - Eigen (http://www.eigen.tuxfamily.org/index.php?title=Main_Page)
@@ -37,13 +36,7 @@ Misc:
 	- Linux: `sudo apt install libopenmpi-dev`
 
 
-## Installation 
-Here provided how to use and make configuration of Deep Mimic in Ubuntu-16.04
-
-If you'd like to see the original version of installation by authors 'Xuebin Peng', the [link here](https://github.com/xbpeng/DeepMimic).
-
-
-### 1.Bullet2.88
+### 1. Bullet2.88
 
 [Bullet 2.88](https://github.com/bulletphysics/bullet3/releases)
 
@@ -53,7 +46,7 @@ cd build_cmake
 sudo make install
 ```
 
-### 2.Eigen3
+### 2. Eigen3
 
 [Eigen](http://www.eigen.tuxfamily.org/index.php?title=Main_Page)
 
@@ -64,14 +57,16 @@ cmake ..
 make install
 ```
 
-### 3.OpenGL
+`sudo apt-get install libeigen3-dev` is also a good way to install eigen3, set `MakeFile` see the [[problem_2](<https://github.com/zhaolongkzz/DeepMimic_configuration#2bullet>)] below.
+
+### 3. OpenGL
 
 ```bash
 sudo apt-get update
 sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev
 ```
 
-### 4.Freeglut
+### 4. Freeglut
 
 [Freeglut](http://freeglut.sourceforge.net/)
 
@@ -81,7 +76,7 @@ make
 sudo make install
 ```
 
-### 5.Glew
+### 5. Glew
 
 [Glew](http://glew.sourceforge.net/)
 
@@ -92,10 +87,9 @@ sudo make install
 make clean
 ```
 
-### 6.env
+### 6. Env
 
 [PyOpenGL](http://pyopengl.sourceforge.net/)
-
 
 ```bash
 pip install PyOpenGL PyOpenGL_accelerate
@@ -105,7 +99,7 @@ conda install tensorflow-gpu=1.12
 conda install PyOpenGL
 ```
 
-### 7.Swig
+### 7. Swig
 
 [Swig](http://www.swig.org/)
 
@@ -149,7 +143,6 @@ use `clang --version` to see the version
 
 in Ubuntu-16.04, you can install `bullet` by `sudo apt-get install libbullet-dev libbullet-extras-dev`
 
-
 fix the location of the eigen and bullet, if you use the env in conda, like below:
 
 ```bash
@@ -172,13 +165,28 @@ Compiling shader: data/shaders/Mesh_VS.glsl
 Compiling shader: data/shaders/DownSample_PS.glsl
 Segmentation fault
 ```
-when you encounter the problem of `Segmentation fault`, there are two aspects, first remember to use NVIDIA <= 390, and second is to comment out #269 line (#glutInitContextVersion(3, 2))
+when you encounter the problem of `Segmentation fault`.
+there are two aspects, first remember to use NVIDIA <= 390, and second is to comment out #269 line in `DeepMimic.py`(#glutInitContextVersion(3, 2)).
+
+(but now i use nvidia-smi=415 is ok!)
+
+### 4.when pelt boxes to robot
+[issue#58](https://github.com/xbpeng/DeepMimic/issues/58)
+
+when you use `x` to pelt the character with random boxes, then shows wrong message below: 
+```bash
+python: util/MathUtil.cpp:175: static tMatrix cMathUtil::RotateMat(const tVector &, double): Assertion `std::abs(axis.squaredNorm() - 1) < 0.0001' failed.
+Aborted
+```
+try to adjust the equation `std::abs(axis.squaredNorm() - 1) < 0.1`, from 0.0001 to 0.1.
 
 
 
+---
 
+**Below is the original context of author**
 
-
+![Skills](images/teaser.png)
 
 ## Build
 The simulated environments are written in C++, and the python wrapper is built using SWIG.
