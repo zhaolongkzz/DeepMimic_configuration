@@ -1,13 +1,23 @@
 # Overview of Deep Mimic Paper
 [TOC]
 
-## Introducation
+## Introduction
 This is the paper of SIGGRAPH 2018 paper:
 "DeepMimic: Example-Guided Deep Reinforcement Learning of Physics-Based Character Skills".
 The framework uses reinforcement learning to train a simulated humanoid to imitate a variety
-of motion skills from mocap data.
+of motion skills from motion capture (mocap) data.
 
-Project page: https://xbpeng.github.io/projects/DeepMimic/index.html
+Original Project page of Authors: https://xbpeng.github.io/projects/DeepMimic/index.html
+
+
+
+**Main Work of Mine Here:**
+
+Firstly, I provide the installation of Linux Version and some problem solving.
+
+Secondly, Transfer bvh files of mocap to the format of deep mimic. [Not yet]
+
+Thirdly, **TODO**
 
 ## Installation 
 Here I provide how to use and make configuration of Deep Mimic in Ubuntu-16.04, and also offer some problem solving to code, from 0 to 7 and problem below, hope it can help you~     [[link](https://github.com/zhaolongkzz/DeepMimic_configuration/blob/master/README.md#0-dependencies)]
@@ -103,7 +113,7 @@ conda install PyOpenGL
 
 [Swig](http://www.swig.org/)
 
-If you are using anaconda and activate a environment, I suggest commenting out all the line of conda in `.bashrc`, and open a new terminal to install swig, because of the `libpcre.so.1` not find if it's in conda floder.
+If you are using anaconda and activate a environment, I suggest commenting out all the line of conda in `.bashrc`, and open a new terminal to install swig, because of the `libpcre.so.1` not find if it's in conda folder.
 
 ```bash
 sudo apt-get install g++
@@ -130,7 +140,7 @@ MPI: `sudo apt install libopenmpi-dev`
 
 ## Problem
 
-### 1.clang++ not found
+### 1. clang++ not found
 make: clang++: Command not found
 Makefile:49: recipe for target 'objs/Main.o' failed
 make: *** [objs/Main.o] Error 127
@@ -139,7 +149,7 @@ make: *** [objs/Main.o] Error 127
 
 use `clang --version` to see the version
 
-### 2.Bullet
+### 2. bullet
 
 in Ubuntu-16.04, you can install `bullet` by `sudo apt-get install libbullet-dev libbullet-extras-dev`
 
@@ -153,7 +163,7 @@ PYTHON_INC = /home/zzl/anaconda3/envs/mimic/include/python3.6m
 PYTHON_LIB = /home/zzl/anaconda3/envs/mimic/lib/ -lpython3.6m
 ```
 
-### 3.Segmentation fault
+### 3. segmentation fault
 ```bash
 Renderer: GeForce GTX 1060/PCIe/SSE2
 OpenGL version supported 3.2.0 NVIDIA 384.130
@@ -170,7 +180,7 @@ there are two aspects, first remember to use NVIDIA <= 390, and second is to com
 
 (but now i use nvidia-smi=415 is ok!)
 
-### 4.when pelt boxes to robot
+### 4. when pelt boxes to robot
 [issue#58](https://github.com/xbpeng/DeepMimic/issues/58)
 
 when you use `x` to pelt the character with random boxes, then shows wrong message below: 
@@ -182,9 +192,11 @@ try to adjust the equation `std::abs(axis.squaredNorm() - 1) < 0.1`, from 0.0001
 
 
 
----
+
 
 **Below is the original context of author**
+
+---
 
 ![Skills](images/teaser.png)
 
