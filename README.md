@@ -4,25 +4,24 @@
 ## Introduction
 This is the paper of SIGGRAPH 2018 paper:
 "DeepMimic: Example-Guided Deep Reinforcement Learning of Physics-Based Character Skills".
-The framework uses reinforcement learning to train a simulated humanoid to imitate a variety
-of motion skills from motion capture (mocap) data.
+The framework uses reinforcement learning to train a simulated humanoid to imitate a variety of motion skills from motion capture (mocap) data.
 
 Original Project page of Authors: https://xbpeng.github.io/projects/DeepMimic/index.html
 
 
 
-**Main Work of Mine Here:**
+# Main Work of Mine Here
 
-Firstly, I provide the installation of Linux Version and some problem solving.
+**Firstly**, The installation of `Linux Version` and some `problem solving`.
 
-Secondly, Transfer bvh files of mocap to the format of deep mimic. [Not yet]
+**Secondly**, Transfer bvh files of mocap to the format of deep mimic. [Not yet] Link: [bvh2mimic](https://github.com/zhaolongkzz/bvh2mimic)
 
-Thirdly, **TODO**
+**Thirdly**, **TODO**
 
-## Installation 
+## Installation
 Here I provide how to use and make configuration of Deep Mimic in Ubuntu-16.04, and also offer some problem solving to code, from 0 to 7 and problem below, hope it can help you~     [[link](https://github.com/zhaolongkzz/DeepMimic_configuration/blob/master/README.md#0-dependencies)]
 
-If you'd like to see the original version of installation by author 'Xuebin Peng', the [link here](https://github.com/zhaolongkzz/DeepMimic_configuration/blob/master/README_INSTALLATION.md). If all I offer isn't useful to you, Maybe this one also helps you, [link](https://github.com/bsivanantham/DeepMimic/blob/master/README.Install.md).
+If you'd like to see the original version of installation by author 'Xuebin Peng', the [link here](https://github.com/zhaolongkzz/DeepMimic_configuration/blob/master/README_INSTALLATION.md).
 
 
 ### 0. Dependencies
@@ -46,15 +45,20 @@ Misc:
 	- Linux: `sudo apt install libopenmpi-dev`
 
 
+
 ### 1. Bullet2.88
 
 [Bullet 2.88](https://github.com/bulletphysics/bullet3/releases)
 
+Note that MPI must be installed before MPI4Py. When building Bullet, be sure to disable double precision with the build flag `DUSE_DOUBLE_PRECISION=OFF`.
+
 ```bash
-./build_cmake_pybullet_double.sh
+./build_cmake_pybullet_double.sh -DUSE_DOUBLE_PRECISION=OFF
 cd build_cmake
 sudo make install
 ```
+
+or you could install bullet by `sudo apt-get install libbullet-dev libbullet-extras-dev`, and see the [problem-2](https://github.com/zhaolongkzz/DeepMimic_configuration#2-bullet)
 
 ### 2. Eigen3
 
@@ -138,6 +142,7 @@ PATH=$PATH:$SWIG_PATH
 MPI: `sudo apt install libopenmpi-dev`
 
 
+
 ## Problem
 
 ### 1. clang++ not found
@@ -176,9 +181,12 @@ Compiling shader: data/shaders/DownSample_PS.glsl
 Segmentation fault
 ```
 when you encounter the problem of `Segmentation fault`.
-there are two aspects, first remember to use NVIDIA <= 390, and second is to comment out #269 line in `DeepMimic.py`(#glutInitContextVersion(3, 2)).
+there are two aspects:
 
-(but now i use nvidia-smi=415 is ok!)
+- First remember to use NVIDIA <= 390, and (but now i use nvidia-415 is ok!)
+- Second is to comment out #269 line in `DeepMimic.py`(#glutInitContextVersion(3, 2)). [issue#10](https://github.com/xbpeng/DeepMimic/issues/10)
+
+
 
 ### 4. when pelt boxes to robot
 [issue#58](https://github.com/xbpeng/DeepMimic/issues/58)
@@ -192,9 +200,11 @@ try to adjust the equation `std::abs(axis.squaredNorm() - 1) < 0.1`, from 0.0001
 
 
 
+<br/>
 
+<br/>
 
-**Below is the original context of author**
+# Below is the original context of author
 
 ---
 
